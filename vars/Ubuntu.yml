@@ -12,4 +12,6 @@ default_packages:
     - lsof
     - python-pip
     - sysstat
+    - unattended-upgrades 
+    - apt-listchanges
 ntpd_service: ntp
