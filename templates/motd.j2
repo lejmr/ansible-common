@@ -1,0 +1,17 @@
+
+                      This system is managed by Ansible. 
+             Please don't do manual changes because will be erased
+                                                              
+                 o                            o-o  o-o  o   o 
+                 |            o              /    o   o |\ /| 
+                 |    o-o       o-O-o o-o   O     |   | | O | 
+                 |    |-'     o | | | |      \    o   o |   | 
+                 O---oo-o     | o o o o   O   o-o  o-o  o   o 
+                          o   o Managed by Milos Kozak
+                           o-o          milos.kozak@lejmr.com
+          
+          OS          : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Hostname    : {{ ansible_hostname }}
+          IP address  : {{ ansible_default_ipv4.address }}
+          System type : {{ ansible_system }}
+          Kernel      : {{ ansible_kernel }}

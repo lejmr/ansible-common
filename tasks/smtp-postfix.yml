@@ -1,0 +1,39 @@
+- name: Postfix | Ensure daemon is installed
+  package: name={{item.name}} state={{item.state}} 
+  with_items:
+      - {name: exim4, state: absent}
+      - {name: ssmtp, state: absent}
+      - {name: sendmail, state: absent}
+      - {name: postfix, state: installed}
+
+#sudo yum install cyrus-sasl cyrus-sasl-lib cyrus-sasl-plain
+
+- name: Postfix | Configure relay host
+  lineinfile: dest=/etc/postfix/main.cf regexp='^relayhost' insertafter="^#relayhost" line="relayhost = [{{ smtp_host }}]:25"
+
+- name: Postfix | Configure mynetworks_style to host
+  lineinfile: dest=/etc/postfix/main.cf regexp='^mynetworks_style' insertafter="^#mynetworks_style" line="mynetworks_style = host"
+
+- name: Postfix | SASL auth activated
+  lineinfile: dest=/etc/postfix/main.cf regexp='^smtp_sasl_auth_enable' insertafter="^#smtp_sasl_auth_enable" line="smtp_sasl_auth_enable = yes"
+  when: smtp_user is defined and smtp_password is defined
+
+- name: Postfix | SASL configure credential files
+  lineinfile: dest=/etc/postfix/main.cf regexp='^smtp_sasl_password_maps' insertafter="^#smtp_sasl_password_maps" line="smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd"
+  when: smtp_user is defined and smtp_password is defined
+  
+- name: Postfix | SASL security options
+  lineinfile: dest=/etc/postfix/main.cf regexp='^smtp_sasl_security_options' insertafter="^#smtp_sasl_security_options" line="smtp_sasl_security_options = mutual_auth"
+  when: smtp_user is defined and smtp_password is defined
+  
+- name: Postfix | SASL configure credentials
+  lineinfile: dest=/etc/postfix/sasl_passwd create=yes regexp="^{{ smtp_host }}" line="[{{ smtp_host }}]:25  {{ smtp_user}}:{{smtp_password}}" mode=0600 owner=root group=root
+  register: sasl_user_added
+  when: smtp_user is defined and smtp_password is defined
+  
+- name: Postfix | Update hash file
+  shell: postmap /etc/postfix/sasl_passwd
+  when: sasl_user_added.changed
+
+- name: Postfix | Reload server
+  service: name=postfix state=restarted enabled=yes

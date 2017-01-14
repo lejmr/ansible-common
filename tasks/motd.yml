@@ -1,0 +1,17 @@
+
+- name: motd | Update motd
+  template: src=motd.j2 dest={{ motd_path }} mode=0644 owner=root group=root
+    
+- name: motd | Upload system information script
+  copy: src=system_info.sh dest={{ motd_system_info_script_path }} mode=0755
+
+- name: motd | Erase not necessary motd messages
+  file: path=/etc/update-motd.d/{{ item }} state=absent
+  with_items:
+      - 00-header
+      - 51-cloudguest
+  when: ansible_distribution == 'Ubuntu'
+
+- name: motd | Upload motd loader
+  copy: src=load-motd.sh dest=/etc/update-motd.d/10-help-text mode=0755
+  when: ansible_distribution == 'Ubuntu'

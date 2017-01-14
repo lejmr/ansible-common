@@ -1,0 +1,20 @@
+- name: SSMTPd | Ensure daemon is installed
+  package: name={{item.name}} state={{item.state}} 
+  with_items:
+      - {name: exim4, state: absent}
+      - {name: ssmtp, state: installed}
+      - {name: sendmail, state: absent}
+      - {name: postfix, state: absent}
+
+- name: SSMTPd | Configure relay host
+  lineinfile: dest=/etc/ssmtp/ssmtp.conf regexp='^mailhub' insertafter="^#mailhub" line="mailhub={{ smtp_host }}:587"
+
+- name: SSMTPd | Configuration
+  lineinfile: dest=/etc/ssmtp/ssmtp.conf regexp='^{{item.item}}' insertafter="^#{{item.item}}" line="{{item.item}}={{item.value}}"
+  with_items:
+      - {item: UseTLS, value: "Yes"}
+      - {item: UseSTARTTLS, value: "Yes"}
+      - {item: AuthUser, value: "{{smtp_user}}" }
+      - {item: AuthPass, value: "{{ smtp_password }}"}
+      - {item: AuthMethod, value: LOGIN}
+      - {item: Debug, value: "Yes"}

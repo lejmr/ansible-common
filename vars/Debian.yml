@@ -1,0 +1,15 @@
+motd_path: /etc/motd
+motd_system_info_script_path: /etc/profile.d/system_info.sh
+default_packages: 
+    - vim
+    - tmux
+    - git
+    - mc
+    - htop
+    - ntp
+    - ntpdate
+    - psmisc
+    - lsof
+    - python-pip
+    - sysstat
+ntpd_service: ntp
