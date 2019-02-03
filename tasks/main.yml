@@ -10,7 +10,7 @@
   tags: motd
 
 - name: Set system hostname
-  hostname: name="{{ inventory_hostname }}"
+  hostname: name="{{ ansible_ssh_host }}"
 
 - name: Upload public key
   authorized_key: user=root key="{{ item }}" 
@@ -91,7 +91,7 @@
   lineinfile: dest=/etc/ssh/sshd_config regexp='^Port ' line='Port {{set_ssh_port|default(22)}}'
   notify:
       - restart sshd
-      - restart firewall
+#      - restart firewall
 
 - name: SSH | Install fail2ban if port 22
   package: name=fail2ban state=latest

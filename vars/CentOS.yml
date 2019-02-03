@@ -11,4 +11,16 @@ default_packages:
     - lsof
     - python-pip
     - sysstat
+    - mailx
+    - cockpit
+    - cockpit-docker
+    - cockpit-packagekit
+    - cockpit-storaged
+    - iotop
+    - iftop
+    - soscleaner
+    - sos
+    - yum-utils
+    - fail2ban
+    - iotop
 ntpd_service: ntpd

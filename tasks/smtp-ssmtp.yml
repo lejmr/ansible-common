@@ -7,7 +7,7 @@
       - {name: postfix, state: absent}
 
 - name: SSMTPd | Configure relay host
-  lineinfile: dest=/etc/ssmtp/ssmtp.conf regexp='^mailhub' insertafter="^#mailhub" line="mailhub={{ smtp_host }}:587"
+  lineinfile: dest=/etc/ssmtp/ssmtp.conf regexp='^mailhub' insertafter="^#mailhub" line="mailhub={{ smtp_host }}:{{ smtp_port|default(587)}}"
 
 - name: SSMTPd | Configuration
   lineinfile: dest=/etc/ssmtp/ssmtp.conf regexp='^{{item.item}}' insertafter="^#{{item.item}}" line="{{item.item}}={{item.value}}"
@@ -18,3 +18,4 @@
       - {item: AuthPass, value: "{{ smtp_password }}"}
       - {item: AuthMethod, value: LOGIN}
       - {item: Debug, value: "Yes"}
+  when: smtp_user is defined and smtp_password is defined

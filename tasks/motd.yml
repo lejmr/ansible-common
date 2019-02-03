@@ -1,6 +1,6 @@
 
 - name: motd | Update motd
-  template: src=motd.j2 dest={{ motd_path }} mode=0644 owner=root group=root
+  template: src=motd_{{ motd_group|default("lejmr") }}.j2 dest={{ motd_path }} mode=0644 owner=root group=root
     
 - name: motd | Upload system information script
   copy: src=system_info.sh dest={{ motd_system_info_script_path }} mode=0755
